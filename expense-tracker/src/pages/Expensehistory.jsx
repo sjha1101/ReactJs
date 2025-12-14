@@ -1,17 +1,5 @@
 import React, { useState } from "react";
-import ExpenseShow from "./ExpenseShow";
-import { Pie } from "react-chartjs-2";
 import "../assets/css/home.css";
-
-import {
-    Chart as ChartJS,
-    ArcElement,
-    Tooltip,
-    Legend,
-    Title
-} from "chart.js";
-
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 function Expensehistory() {
 
@@ -26,7 +14,6 @@ function Expensehistory() {
     const deleteExpense = (id) => {
         setExpenses(expenses.filter(exp => exp.id !== id));
     };
-
     const saveEdit = () => {
         setExpenses(
             expenses.map(exp =>
@@ -36,107 +23,108 @@ function Expensehistory() {
         setEditingExpense(null);
     };
 
-    const chartData = {
-        labels: expenses.map(exp => exp.item),
-        datasets: [
-            {
-                label: "Expense Amount",
-                data: expenses.map(exp => exp.amount),
-                backgroundColor: [
-                    "#6d28d9",
-                    "#4f46e5",
-                    "#3b82f6",
-                    "#10b981",
-                    "#f59e0b",
-                    "#ef4444"
-                ],
-                borderColor: "#fff",
-                borderWidth: 2
-            }
-        ]
-    };
-
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: { position: "bottom" },
-            title: { display: true, text: "Expense Distribution" }
-        }
-    };
-
     return (
-        <>
+        <div className="expenseshow-container">
             <h1 className="expensetitle">Expense History</h1>
 
-            <div className="expenseshow-container">
-                <div className="history-layout">
+            {expenses.length === 0 && (
+                <p className="empty-state">No expenses added yet.</p>
+            )}
 
-                    <div className="expense-section">
-                        <ExpenseShow
-                            expenses={expenses}
-                            deleteExpense={deleteExpense}
-                            setEditingExpense={setEditingExpense}
-                        />
-                    </div>
+            {!editingExpense && expenses.length > 0 && (
+                <table className="expense-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Amount (₹)</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-                    <div className="graph-section">
-                        {editingExpense ? (
-                            <div className="edit-form">
-                                <h2>Edit Expense</h2>
-
-                                <input
-                                    type="text"
-                                    value={editingExpense.item}
-                                    onChange={(e) =>
-                                        setEditingExpense({
-                                            ...editingExpense,
-                                            item: e.target.value
-                                        })
-                                    }
-                                />
-
-                                <input
-                                    type="number"
-                                    value={editingExpense.amount}
-                                    onChange={(e) =>
-                                        setEditingExpense({
-                                            ...editingExpense,
-                                            amount: Number(e.target.value)
-                                        })
-                                    }
-                                />
-
-                                <input
-                                    type="date"
-                                    value={editingExpense.date}
-                                    onChange={(e) =>
-                                        setEditingExpense({
-                                            ...editingExpense,
-                                            date: e.target.value
-                                        })
-                                    }
-                                />
-
-                                <div className="button-group">
-                                    <button className="add-btn" onClick={saveEdit}>
-                                        Update
+                    <tbody>
+                        {expenses.map((exp) => (
+                            <tr key={exp.id}>
+                                <td>{exp.item}</td>
+                                <td>₹{exp.amount}</td>
+                                <td>{exp.date}</td>
+                                <td>
+                                    <button
+                                        className="add-btn"
+                                        onClick={() =>
+                                            setEditingExpense({ ...exp })
+                                        }
+                                    >
+                                        Edit
                                     </button>
+
                                     <button
                                         className="delete-btn"
-                                        onClick={() => setEditingExpense(null)}
+                                        onClick={() => deleteExpense(exp.id)}
                                     >
-                                        Cancel
+                                        Delete
                                     </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <Pie data={chartData} options={chartOptions} />
-                        )}
-                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
 
+            {editingExpense && (
+                <div className="edit-form">
+                    <h2>Edit Expense</h2>
+
+                    <input
+                        type="text"
+                        placeholder="Item Name"
+                        value={editingExpense.item}
+                        onChange={(e) =>
+                            setEditingExpense({
+                                ...editingExpense,
+                                item: e.target.value
+                            })
+                        }
+                    />
+
+                    <input
+                        type="number"
+                        placeholder="Amount"
+                        value={editingExpense.amount}
+                        onChange={(e) =>
+                            setEditingExpense({
+                                ...editingExpense,
+                                amount: Number(e.target.value)
+                            })
+                        }
+                    />
+
+                    <input
+                        type="date"
+                        value={editingExpense.date}
+                        onChange={(e) =>
+                            setEditingExpense({
+                                ...editingExpense,
+                                date: e.target.value
+                            })
+                        }
+                    />
+
+                    <div className="button-group">
+                        <button className="add-btn" onClick={saveEdit}>
+                            Update
+                        </button>
+
+                        <button
+                            className="delete-btn"
+                            onClick={() => setEditingExpense(null)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </>
+            )}
+        </div>
     );
 }
 
