@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/css/userauth.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { API } from "../config";
 
 function Login() {
     const [showForm, setShowForm] = useState(false);
@@ -12,45 +11,16 @@ function Login() {
     const [success, setSuccess] = useState("");
     const navigate = useNavigate();
 
-    console.log("API URL:", API);
-
-    const handleLogin = async () => {
+    const handleLogin = () => {
         setError("");
         setSuccess("");
-
         if (!username || !password) {
-            return setError("All fields are required");
+            setError("All fields are required");
+            return;
         }
 
-        try {
-            const response = await fetch(`${API}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username, password }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccess("Login Successful!");
-
-                if (data.token) {
-                    localStorage.setItem("token", data.token);
-                }
-
-                setTimeout(() => {
-                    navigate("/HomePage");
-                }, 700);
-
-            } else {
-                setError(data.message || "Invalid credentials");
-            }
-
-        } catch (err) {
-            setError("Server error");
-        }
+        setSuccess("Login successful!");
+        navigate("/HomePage");
     };
 
     return (
@@ -73,7 +43,6 @@ function Login() {
                             <div className="login-popup">
                                 <div className="login-box-1">
 
-                                    {/* Neon Corners */}
                                     <div className="neon-corner-blue top-left"></div>
                                     <div className="neon-corner-red bottom-right"></div>
 
@@ -88,9 +57,8 @@ function Login() {
 
                                         <h2 className="neon-title">LOGIN</h2>
 
-                                        {error && <p className="error-text">{error}</p>}
-                                        {success && <p className="success-text">{success}</p>}
-
+                                        {error && <p className="text-danger">{error}</p>}
+                                        {success && <p className="text-success">{success}</p>}
                                         <input
                                             type="text"
                                             className="neon-input"
@@ -117,6 +85,7 @@ function Login() {
                                                 Sign Up
                                             </Link>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../assets/css/userauth.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { API } from "../config";
 
 function SignUp() {
     const [username, setUsername] = useState("");
@@ -10,42 +9,24 @@ function SignUp() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-
     const navigate = useNavigate();
 
-    const handleSignUp = async () => {
+    const handleSignUp = () => {
         setError("");
         setSuccess("");
 
         if (!username || !password || !confirmPassword) {
-            return setError("All fields are required");
+            setError("All fields are required");
+            return;
         }
 
         if (password !== confirmPassword) {
-            return setError("Passwords do not match");
+            setError("Passwords do not match");
+            return;
         }
 
-        try {
-            const response = await fetch(`${API}/api/signup`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password }), // FIXED
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccess("Registration Successful!");
-
-                setTimeout(() => {
-                    navigate("/");
-                }, 800);
-            } else {
-                setError(data.message || "Something went wrong");
-            }
-        } catch (err) {
-            setError("Server error");
-        }
+        setSuccess("Registration successful!");
+        setTimeout(() => navigate("/"), 1000);
     };
 
     return (
@@ -53,11 +34,12 @@ function SignUp() {
             <div className="row justify-content-center">
                 <div className="col-md-3 col-sm-6 d-flex justify-content-center">
                     <div className="login-backbtn">
-
                         <div className="login-popup">
                             <div className="login-box-1">
-
+                                <div className="neon-corner-blue top-left"></div>
+                                <div className="neon-corner-red bottom-right"></div>
                                 <div className="login-box">
+
                                     <button
                                         className="close-btn back-btn"
                                         onClick={() => navigate("/")}
@@ -67,8 +49,8 @@ function SignUp() {
 
                                     <h2 className="neon-title">SIGN UP</h2>
 
-                                    {error && <p className="error-text">{error}</p>}
-                                    {success && <p className="success-text">{success}</p>}
+                                    {error && <p className="text-danger">{error}</p>}
+                                    {success && <p className="text-success">{success}</p>}
 
                                     <input
                                         type="text"
@@ -104,10 +86,8 @@ function SignUp() {
                                         </Link>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

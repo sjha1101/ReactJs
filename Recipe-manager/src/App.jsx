@@ -4,6 +4,7 @@ import SignUp from './pages/Signup';
 import HomePage from './pages/HomePage';
 import AddRecipe from './pages/AddRecipe';
 import EditPage from './pages/EditPage';
+
 function App() {
   return (
     <Routes>
@@ -11,9 +12,9 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/homepage" element={<HomePage />} />
       <Route path="/addrecipe" element={<AddRecipe />} />
-      <Route path="/editpage" element={<EditPage />} />
+      <Route path="/editpage/:id" element={<EditPage />} />
     </Routes>
   );
 }
 
-export default App
+export default App;

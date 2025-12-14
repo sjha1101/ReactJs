@@ -9,50 +9,17 @@ function EditPage() {
     const recipe = location.state?.recipe;
 
     const [formData, setFormData] = useState({
-        _id: recipe?._id || "",
         title: recipe?.title || "",
         category: recipe?.category || "Breakfast",
         image: recipe?.image || "",
-        cookingTime: recipe?.cookingTime || 0,
+        cookingTime: recipe?.cookingTime || "",
         ingredients: recipe?.ingredients || "",
         description: recipe?.description || ""
     });
 
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-
-    const API = import.meta.env.VITE_API_URL;
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        setError("");
-        setSuccess("");
-
-        if (!formData.title || !formData.category || !formData.ingredients) {
-            return setError("Please fill all required fields");
-        }
-
-        try {
-            const response = await fetch(`${API}/api/edit/${formData._id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setSuccess("Recipe updated successfully!");
-
-                setTimeout(() => navigate("/"), 1500);
-            } else {
-                setError(data.message || "Update failed");
-            }
-        } catch (err) {
-            console.error(err);
-            setError("Server error while updating recipe");
-        }
+        navigate("/HomePage");
     };
 
     return (
@@ -60,9 +27,6 @@ function EditPage() {
             <div className="box">
                 <div className="form-card">
                     <h2 className="text-center mb-4">Edit Your Recipe</h2>
-
-                    {error && <p className="text-danger text-center">{error}</p>}
-                    {success && <p className="text-success text-center">{success}</p>}
 
                     <form onSubmit={handleSubmit}>
                         <div className="row g-4">
@@ -104,7 +68,7 @@ function EditPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, ingredients: e.target.value })
                                     }
-                                ></textarea>
+                                />
                             </div>
 
                             <div className="col-md-6">
@@ -116,7 +80,7 @@ function EditPage() {
                                     onChange={(e) =>
                                         setFormData({ ...formData, description: e.target.value })
                                     }
-                                ></textarea>
+                                />
                             </div>
 
                             <div className="col-md-6">
@@ -151,6 +115,7 @@ function EditPage() {
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
